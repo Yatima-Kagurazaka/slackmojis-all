@@ -8,7 +8,7 @@ if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 
 function DownloadFile(name, url) {
   return new Promise(resolve => {
-    let file = fs.createWriteStream(`${dir}/${name}`);
+    let file = fs.createWriteStream(`${dir}/${name}.png`);
     file.on("finish", () => {
       console.log("Downloaded:", name);
       return resolve();
