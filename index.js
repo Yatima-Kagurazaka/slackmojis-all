@@ -6,9 +6,10 @@ const Promise = require("bluebird");
 var dir = path.resolve("emojis");
 if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 
-function DownloadFile(name, url) {
+function DownloadFile(name, url, category) {
   return new Promise(resolve => {
-    let file = fs.createWriteStream(`${dir}/${name}.png`);
+    if (!fs.existsSync(`${dir}/${category}`)) fs.mkdirSync(`${dir}/${category}`);
+    let file = fs.createWriteStream(`${dir}/${category}/${name}.png`);
     file.on("finish", () => {
       console.log("Downloaded:", name);
       return resolve();
@@ -27,9 +28,9 @@ request({
   .then(list => {
     return Promise.map(
       list,
-      ({ name, image_url }) => {
+      ({ name, image_url, category}) => {
         console.log(`${list.length - ++count} / ${list.length} remaining...`);
-        return DownloadFile(name, image_url).catch(e => {
+        return DownloadFile(name, image_url, category.name).catch(e => {
           ++failures;
           console.log("failed to download:", name);
         });
