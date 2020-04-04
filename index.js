@@ -9,8 +9,12 @@ if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 function DownloadFile(name, url, category) {
   return new Promise(resolve => {
     if (!fs.existsSync(`${dir}/${category}`)) fs.mkdirSync(`${dir}/${category}`);
-    let file = fs.createWriteStream(`${dir}/${category}/${name}.png`);
-    file.on("finish", () => {
+
+    let file = fs.createWriteStream(`${dir}/${category}/${name}.png`, { flag: "wx" });
+    file.on("error", () => {
+      console.log("file " + name + " already exists, try with another name");
+      name = name + "0";
+    }).on("finish", () => {
       console.log("Downloaded:", name);
       return resolve();
     });
